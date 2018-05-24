@@ -22,7 +22,7 @@ In this README, each step in the pipeline will be explained in details.
 
 #### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
-Because I'm using YOLOv3, so there are no HOG, but the same principle between HOG and convolution layer is that they are using gradients to fine features. But convolution layer is leaning how to extracted feature.
+Because I'm using YOLOv3, so there are no HOG, but the same principle between HOG and convolution layer is that they are using gradients to find features. But convolution layer is learning how to extracted feature.
 
 There is a example for a convolution layer after extreacted features - the feature maps.
 
@@ -34,7 +34,7 @@ Because I use YOLOv3, so I will explain the architecture as below picture.
 
 ![alt text][image1]
 
-It use ResNet base CNN and reach 100 layer deep, so that It can improve mAP, more detail architecture as below.
+It use ResNet as based CNN and reach 100 layer deep, so that It can improve mAP, more detail architecture as below.
 
 Besides, it has 3 scale output (13 * 13, 26 * 26, 52 * 52) and every scale have 3 bounding box size, smaller scale get bigger bounding box size, bigger scale get smaller bounding box size.
 
