@@ -14,6 +14,8 @@ In this README, each step in the pipeline will be explained in details.
 [image4]: ./output_images/test2.jpg
 [image5]: ./output_images/test4.jpg
 [image6]: ./output_images/test4_withoutNMS.jpg
+[image7]: ./output_images/BBox.png
+[image8]: ./output_images/IOU.png
 
 ---
 ### Histogram of Oriented Gradients (HOG)
@@ -38,6 +40,7 @@ Besides, it has 3 scale output (13 * 13, 26 * 26, 52 * 52) and every scale have 
 
 So smaller scale is good at searching big object, bigger scale is good at searching small object and so on...
 
+```
 layer     filters    size              input                output
     0 conv     32  3 x 3 / 1   416 x 416 x   3   ->   416 x 416 x  32  0.299 BFLOPs
     1 conv     64  3 x 3 / 2   416 x 416 x  32   ->   208 x 208 x  64  1.595 BFLOPs
@@ -146,7 +149,7 @@ layer     filters    size              input                output
   104 conv    256  3 x 3 / 1    52 x  52 x 128   ->    52 x  52 x 256  1.595 BFLOPs
   105 conv    255  1 x 1 / 1    52 x  52 x 256   ->    52 x  52 x 255  0.353 BFLOPs
   106 detection
-  
+```
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
@@ -169,7 +172,7 @@ YOLOv3 do not need sliding window, because its output will decide where object i
 
 as below picture
 
-![alt text][image3]
+![alt text][image7]
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
@@ -191,10 +194,30 @@ First, lower score will be eliminated with a threshold, left object is our targe
 ![alt text][image6]
 
 
+
 Second, there are overlapping boxes there, so we use non-max suppresion with IOU to filtrate it.
 Below picture is the description about how it work. 
 
-![alt text][image5]
+```
+while order.size > 0:
+    i = order[0]
+    keep.append(i)
+
+    xx1 = np.maximum(x[i], x[order[1:]])
+    yy1 = np.maximum(y[i], y[order[1:]])
+    xx2 = np.minimum(x[i] + w[i], x[order[1:]] + w[order[1:]])
+    yy2 = np.minimum(y[i] + h[i], y[order[1:]] + h[order[1:]])
+
+    w1 = np.maximum(0.0, xx2 - xx1 + 1)
+    h1 = np.maximum(0.0, yy2 - yy1 + 1)
+    inter = w1 * h1
+
+    ovr = inter / (areas[i] + areas[order[1:]] - inter)
+    inds = np.where(ovr <= self._t2)[0]
+    order = order[inds + 1]
+```
+
+![alt text][image8]
 
 ---
 
@@ -215,3 +238,5 @@ I find that the small object still hard to detect so it will detect fail when ca
 https://pjreddie.com/media/files/papers/YOLOv3.pdf
 
 https://github.com/allanzelener/YAD2K
+
+http://tarangshah.com/blog/2018-01-27/what-is-map-understanding-the-statistic-of-choice-for-comparing-object-detection-models/
